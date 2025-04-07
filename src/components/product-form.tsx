@@ -5,12 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Card, Container, Stack, Typography } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import RHFTextFieldArea from "./RhfTextField";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { getProducts } from "@/utils/products";
+import { getProducts, setProducts } from "@/utils/products";
 import AuthGuard from "./auth-guard";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 type Props = {
   id?: string | undefined;
@@ -20,7 +20,6 @@ const ProductForm = (props: Props) => {
   const { id } = props;
   const [productsData, setProductsData] = useState<IProducts[]>([]);
   const product = productsData.find((product: IProducts) => product.id === id);
-  const router = useRouter();
 
   const defaultValues = useMemo(
     () => ({
@@ -49,7 +48,7 @@ const ProductForm = (props: Props) => {
         product.id === id ? { ...product, ...data } : product
       );
 
-      localStorage.setItem("products", JSON.stringify(updatedProducts));
+      setProducts(updatedProducts);
       toast.success("Product updated successfully!");
     } else {
       const newProduct = { ...data, id: crypto.randomUUID() };
@@ -65,9 +64,10 @@ const ProductForm = (props: Props) => {
       }
 
       existingProducts.push(newProduct);
-      localStorage.setItem("products", JSON.stringify(existingProducts));
+      setProducts(existingProducts);
+      toast.success("Product added successfully!");
     }
-    router.push("/");
+    redirect("/");
   };
 
   useEffect(() => {
