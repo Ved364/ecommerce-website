@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { getProducts } from "@/utils/products";
 import AuthGuard from "./auth-guard";
+import { toast } from "sonner";
 
 type Props = {
   id?: string | undefined;
@@ -49,7 +50,7 @@ const ProductForm = (props: Props) => {
       );
 
       localStorage.setItem("products", JSON.stringify(updatedProducts));
-      alert("Product updated successfully!");
+      toast.success("Product updated successfully!");
     } else {
       const newProduct = { ...data, id: crypto.randomUUID() };
       const isDuplicate = existingProducts.some(
@@ -59,7 +60,7 @@ const ProductForm = (props: Props) => {
       );
 
       if (isDuplicate) {
-        alert("Product already exists!");
+        toast.warning("Product already exists!");
         return;
       }
 

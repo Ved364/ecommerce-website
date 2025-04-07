@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { toast } from "sonner";
 
 const ProductsPage = () => {
   const [productsData, setProductsData] = useState<IProducts[]>([]);
@@ -46,6 +47,7 @@ const ProductsPage = () => {
     if (userCartMap[id]) {
       userCartMap[id].quantity += 1;
     } else {
+      toast.success("Product successfully added to cart!");
       userCartMap[id] = { ...cartProduct, quantity: 1 };
     }
     handleCartMap(userCartMap);
@@ -60,6 +62,7 @@ const ProductsPage = () => {
       if (userCartMap[id].quantity > 1) {
         userCartMap[id].quantity -= 1;
       } else {
+        toast("Product removed from cart.");
         delete userCartMap[id];
       }
     }
@@ -71,8 +74,6 @@ const ProductsPage = () => {
   const getCartProductCount = (productId: string) => {
     return cartMap[user]?.[productId]?.quantity ?? 0;
   };
-
-  console.log("products page cartMap: ", cartMap);
 
   useEffect(() => {
     setProductsData(getProducts());

@@ -9,6 +9,7 @@ import {
 } from "@/utils/login";
 import { redirect } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type IGlobalContext = {
   login: (loggedInUser: string) => void;
@@ -33,12 +34,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartQuantity, setCartQuantity] = useState(0);
 
   const login = (loggedInUser: string) => {
+    toast.success("Logged in successfully");
     setLoggedInUser(loggedInUser);
     setUser(loggedInUser);
     redirect("/");
   };
 
   const logout = () => {
+    toast.success("Logged out successfully");
     removeLoggedInUser();
     setUser("");
     redirect("/login");

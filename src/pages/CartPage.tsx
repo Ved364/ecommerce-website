@@ -23,11 +23,13 @@ import { IProducts } from "@/types/products";
 import { redirect } from "next/navigation";
 import { getProducts, setProducts } from "@/utils/products";
 import { setOrder } from "@/utils/order";
+import { toast } from "sonner";
 
 type IUpdatedProduct = Record<string, IProducts | ICartProduct>;
 
 const CartPage = () => {
   const [cartData, setCartData] = useState<IUserCartMap>({});
+  const [productsData, setProductsData] = useState<IProducts[]>([]);
   const [updatedProducts, setUpdatedProducts] = useState<IUpdatedProduct[]>([]);
   const [priceMismatch, setPriceMismatch] = useState(false);
 
@@ -39,7 +41,6 @@ const CartPage = () => {
     decrementCartQuantity,
     cartQuantity,
   } = useGlobalContext();
-  console.log("cartPage: ", cartMap);
 
   const handleAddToCart = (product: IProducts) => {
     const { id } = product;
@@ -61,6 +62,7 @@ const CartPage = () => {
       if (userCartMap[id].quantity > 1) {
         userCartMap[id].quantity -= 1;
       } else {
+        toast("Product removed from cart.");
         delete userCartMap[id];
       }
     }
@@ -99,7 +101,7 @@ const CartPage = () => {
     );
 
     if (hasInsufficientStock) {
-      alert("Order cannot be placed due to insufficient stock.");
+      toast.error("Order cannot be placed due to insufficient stock.");
       return;
     }
 
@@ -115,7 +117,7 @@ const CartPage = () => {
       decrementCartQuantity();
     }
 
-    alert("Order placed successfully!");
+    toast.success("Order placed successfully!");
     redirect("/");
   };
 
@@ -153,6 +155,10 @@ const CartPage = () => {
 
     setCartData(updatedCart);
   }, [user, cartMap, handleCartMap]);
+
+  useEffect(() => {
+    setProductsData(getProducts());
+  }, []);
 
   return (
     <>
@@ -246,7 +252,17 @@ const CartPage = () => {
                         <RemoveIcon sx={{ cursor: "pointer" }} />
                       </IconButton>
                       {getCartProductCount(cart.id)}
-                      <IconButton onClick={() => handleAddToCart(cart)}>
+                      <IconButton
+                        onClick={() => handleAddToCart(cart)}
+                        disabled={(() => {
+                          const product = productsData.find(
+                            (p) => p.id === cart.id
+                          );
+                          return product
+                            ? getCartProductCount(cart.id) >= product.quantity
+                            : true;
+                        })()}
+                      >
                         <AddIcon sx={{ cursor: "pointer" }} />
                       </IconButton>
                     </Box>
