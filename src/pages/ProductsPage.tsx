@@ -47,7 +47,7 @@ const ProductsPage = () => {
     if (userCartMap[id]) {
       userCartMap[id].quantity += 1;
     } else {
-      toast.success("Product successfully added to cart!");
+      toast.success("Product successfully added to cart!", { duration: 1000 });
       userCartMap[id] = { ...cartProduct, quantity: 1 };
     }
     handleCartMap(userCartMap);
@@ -62,7 +62,7 @@ const ProductsPage = () => {
       if (userCartMap[id].quantity > 1) {
         userCartMap[id].quantity -= 1;
       } else {
-        toast("Product removed from cart.");
+        toast("Product removed from cart.", { duration: 1000 });
         delete userCartMap[id];
       }
     }

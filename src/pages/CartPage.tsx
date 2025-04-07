@@ -62,7 +62,7 @@ const CartPage = () => {
       if (userCartMap[id].quantity > 1) {
         userCartMap[id].quantity -= 1;
       } else {
-        toast("Product removed from cart.");
+        toast("Product removed from cart.", { duration: 1000 });
         delete userCartMap[id];
       }
     }
@@ -101,7 +101,9 @@ const CartPage = () => {
     );
 
     if (hasInsufficientStock) {
-      toast.error("Order cannot be placed due to insufficient stock.");
+      toast.error("Order cannot be placed due to insufficient stock.", {
+        duration: 1000,
+      });
       return;
     }
 
@@ -117,7 +119,7 @@ const CartPage = () => {
       decrementCartQuantity();
     }
 
-    toast.success("Order placed successfully!");
+    toast.success("Order placed successfully!", { duration: 1000 });
     redirect("/");
   };
 

@@ -34,14 +34,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartQuantity, setCartQuantity] = useState(0);
 
   const login = (loggedInUser: string) => {
-    toast.success("Logged in successfully");
+    toast.success("Logged in successfully", { duration: 1000 });
     setLoggedInUser(loggedInUser);
     setUser(loggedInUser);
     redirect("/");
   };
 
   const logout = () => {
-    toast.success("Logged out successfully");
+    toast.success("Logged out successfully", { duration: 1000 });
     removeLoggedInUser();
     setUser("");
     redirect("/login");
