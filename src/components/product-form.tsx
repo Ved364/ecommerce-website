@@ -49,7 +49,7 @@ const ProductForm = (props: Props) => {
       );
 
       setProducts(updatedProducts);
-      toast.success("Product updated successfully!", { duration: 1000 });
+      toast.success("Product updated successfully!", { duration: 1500 });
     } else {
       const newProduct = { ...data, id: crypto.randomUUID() };
       const isDuplicate = existingProducts.some(
@@ -59,13 +59,13 @@ const ProductForm = (props: Props) => {
       );
 
       if (isDuplicate) {
-        toast.warning("Product already exists!", { duration: 1000 });
+        toast.warning("Product already exists!", { duration: 1500 });
         return;
       }
 
       existingProducts.push(newProduct);
       setProducts(existingProducts);
-      toast.success("Product added successfully!", { duration: 1000 });
+      toast.success("Product added successfully!", { duration: 1500 });
     }
     redirect("/");
   };

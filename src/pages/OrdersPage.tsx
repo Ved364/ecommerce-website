@@ -37,7 +37,8 @@ const OrdersPage = () => {
         ([orderId, orderData]: [string, IOrderDetail]) => {
           const { date, items } = orderData;
 
-          Object.entries(items).forEach(([productId, product]) => {
+          const itemsMap = new Map(Object.entries(items));
+          itemsMap.forEach((product, productId) => {
             userOrderList.push({
               orderId,
               date: new Date(date).toLocaleString(),

@@ -1,7 +1,7 @@
 "use client";
 
 import { ICartMap, IUserCartMap } from "@/types/cart";
-import { getCart, getStorageCart, setCart } from "@/utils/cart";
+import { getCart, getStorageCart, setStorageCart } from "@/utils/cart";
 import {
   getLoggedInUser,
   removeLoggedInUser,
@@ -30,30 +30,28 @@ export const useGlobalContext = () => {
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<string>("");
-  const [cartMap, setCartMap] = useState<ICartMap>({});
+  const [cartMap, setCartMap] = useState<ICartMap>(new Map());
   const [cartQuantity, setCartQuantity] = useState(0);
 
   const login = (loggedInUser: string) => {
-    toast.success("Logged in successfully", { duration: 1000 });
+    toast.success("Logged in successfully", { duration: 1500 });
     setLoggedInUser(loggedInUser);
     setUser(loggedInUser);
     redirect("/");
   };
 
   const logout = () => {
-    toast.success("Logged out successfully", { duration: 1000 });
+    toast.success("Logged out successfully", { duration: 1500 });
     removeLoggedInUser();
     setUser("");
     redirect("/login");
   };
 
   const handleCartMap = (userCartMap: IUserCartMap) => {
-    const newCartMap = {
-      ...cartMap,
-      [user]: userCartMap,
-    };
-    setCartMap(newCartMap);
-    setCart(user, userCartMap);
+    const updatedMap = new Map(cartMap);
+    updatedMap.set(user, userCartMap);
+    setCartMap(updatedMap);
+    setStorageCart(updatedMap);
   };
 
   const incrementCartQuantity = () => {
@@ -72,7 +70,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     if (user) {
       const userCart = getCart(user);
 
-      const totalQuantity: number = Object.values(userCart)?.reduce(
+      const totalQuantity: number = Array.from(userCart.values())?.reduce(
         (acc, product) => {
           return acc + product.quantity;
         },

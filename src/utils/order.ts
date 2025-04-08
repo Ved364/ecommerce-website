@@ -1,9 +1,18 @@
 import { IUserCartMap } from "@/types/cart";
 
-export const getOrder = (loggedInUser: string) => {
+import { ICartProduct } from "@/types/cart";
+
+export const getOrder = (loggedInUser: string): Map<string, ICartProduct> => {
   const orderKey = localStorage.getItem("orders");
   const orders = orderKey ? JSON.parse(orderKey) : {};
-  return orders[loggedInUser] ?? {};
+  const userOrders = orders[loggedInUser] ?? {};
+
+  const latestOrderKey = Object.keys(userOrders).sort().reverse()[0];
+  const latestOrder = userOrders[latestOrderKey];
+
+  if (!latestOrder || !latestOrder.items) return new Map();
+
+  return new Map(Object.entries(latestOrder.items));
 };
 
 export const setOrder = (
@@ -20,7 +29,7 @@ export const setOrder = (
 
   const orderDetails = {
     date: new Date().toISOString(),
-    items: userCart,
+    items: Object.fromEntries(userCart),
     totalAmount,
   };
 

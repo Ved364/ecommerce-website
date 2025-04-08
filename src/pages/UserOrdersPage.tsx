@@ -37,7 +37,9 @@ const OrdersPage = () => {
         ([orderId, orderDetail]: [string, IOrderDetail]) => {
           const { date, items } = orderDetail;
 
-          Object.entries(items).forEach(([productId, item]) => {
+          const itemsMap = new Map(Object.entries(items));
+
+          itemsMap.forEach((item, productId) => {
             flattenedOrders.push({
               orderId,
               date: new Date(date).toLocaleString(),

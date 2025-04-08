@@ -42,13 +42,15 @@ const ProductsPage = () => {
       quantity: 1,
     };
 
-    const userCartMap = cartMap[user] ?? {};
+    const userCartMap = cartMap.get(user) ?? new Map();
+    const existingProduct = userCartMap.get(id.toString());
 
-    if (userCartMap[id]) {
-      userCartMap[id].quantity += 1;
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+      userCartMap.set(id.toString(), existingProduct);
     } else {
-      toast.success("Product successfully added to cart!", { duration: 1000 });
-      userCartMap[id] = { ...cartProduct, quantity: 1 };
+      toast.success("Product successfully added to cart!", { duration: 1500 });
+      userCartMap.set(id.toString(), cartProduct);
     }
     handleCartMap(userCartMap);
     incrementCartQuantity();
@@ -56,14 +58,17 @@ const ProductsPage = () => {
 
   const handleRemoveFromCart = (product: IProducts) => {
     const { id } = product;
-    const userCartMap = cartMap[user] ?? {};
+    const userCartMap = cartMap.get(user) ?? new Map();
 
-    if (userCartMap[id]) {
-      if (userCartMap[id].quantity > 1) {
-        userCartMap[id].quantity -= 1;
+    const existingProduct = userCartMap.get(id.toString());
+
+    if (existingProduct) {
+      if (existingProduct.quantity > 1) {
+        existingProduct.quantity -= 1;
+        userCartMap.set(id.toString(), existingProduct);
       } else {
-        toast("Product removed from cart.", { duration: 1000 });
-        delete userCartMap[id];
+        toast("Product removed from cart.", { duration: 1500 });
+        userCartMap.delete(id.toString());
       }
     }
 
@@ -72,7 +77,7 @@ const ProductsPage = () => {
   };
 
   const getCartProductCount = (productId: string) => {
-    return cartMap[user]?.[productId]?.quantity ?? 0;
+    return cartMap.get(user)?.get(productId)?.quantity ?? 0;
   };
 
   useEffect(() => {
